@@ -1,0 +1,70 @@
+-- Step 1: Drop the table if it already exists
+DROP TABLE IF EXISTS student_data;
+
+-- Step 2: Create a new table
+CREATE TABLE student_data (
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    score INT,
+    result CHAR(1)
+);
+
+-- Step 3: Insert some test records
+INSERT INTO student_data (id, name, score) VALUES
+(101, 'Ananya', 91),
+(102, 'Rahul', 78),
+(103, 'Sneha', 63),
+(104, 'Kiran', 55);
+
+-- Step 4: Define the stored procedure to assign letter grades
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS update_grades$$
+
+CREATE PROCEDURE update_grades()
+BEGIN
+    -- Declare control variables
+    DECLARE finished INT DEFAULT 0;
+    DECLARE stud_id INT;
+    DECLARE stud_score INT;
+
+    -- Declare a cursor to iterate through students
+    DECLARE grade_cursor CURSOR FOR
+        SELECT id, score FROM student_data;
+
+    -- Set a handler for the end of data
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+
+    -- Open the cursor
+    OPEN grade_cursor;
+
+    -- Start the loop
+    grade_loop: LOOP
+        FETCH grade_cursor INTO stud_id, stud_score;
+        IF finished = 1 THEN
+            LEAVE grade_loop;
+        END IF;
+
+        -- Assign grades based on score
+        IF stud_score >= 90 THEN
+            UPDATE student_data SET result = 'A' WHERE id = stud_id;
+        ELSEIF stud_score >= 75 THEN
+            UPDATE student_data SET result = 'B' WHERE id = stud_id;
+        ELSEIF stud_score >= 60 THEN
+            UPDATE student_data SET result = 'C' WHERE id = stud_id;
+        ELSE
+            UPDATE student_data SET result = 'F' WHERE id = stud_id;
+        END IF;
+    END LOOP;
+
+    -- Close the cursor
+    CLOSE grade_cursor;
+END$$
+
+DELIMITER ;
+
+-- Step 5: Execute the procedure
+CALL update_grades();
+
+-- Step 6: Check updated table
+SELECT * FROM student_data;
