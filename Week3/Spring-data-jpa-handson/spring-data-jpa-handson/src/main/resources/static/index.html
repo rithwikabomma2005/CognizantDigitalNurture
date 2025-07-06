@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Country Management</title>
+    <meta charset="UTF-8" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        input {
+            margin: 5px;
+            padding: 8px;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🌍 Country Management</h1>
+
+    <div>
+        <input type="text" id="code" placeholder="Country Code (e.g., IN)" />
+        <input type="text" id="name" placeholder="Country Name (e.g., India)" />
+        <button onclick="addCountry()">Add Country</button>
+    </div>
+
+    <div>
+        <button onclick="getAllCountries()">View All Countries</button>
+    </div>
+
+    <div>
+        <input type="text" id="deleteCode" placeholder="Code to delete (e.g., IN)" />
+        <button onclick="deleteCountry()">Delete Country</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        const baseUrl = "http://localhost:8081/api/countries";
+
+        function addCountry() {
+            const code = document.getElementById('code').value;
+            const name = document.getElementById('name').value;
+
+            fetch(baseUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code, name })
+            })
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById('result').innerText = '✅ ' + data;
+            });
+        }
+
+        function getAllCountries() {
+            fetch(baseUrl)
+            .then(res => res.json())
+            .then(data => {
+                let output = '<h3>🌐 All Countries</h3><ul>';
+                data

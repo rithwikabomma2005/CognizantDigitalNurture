@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Define the transport bean -->
+    <bean id="scooter" class="com.example.springcore.Scooter" />
+
+    <!-- Constructor Injection -->
+    <bean id="traveller" class="com.example.springcore.Traveller">
+        <constructor-arg ref="scooter" />
+    </bean>
+
+    <!-- Setter Injection (optional) -->
+    <!--
+    <bean id="traveller" class="com.example.springcore.Traveller">
+        <property name="transport" ref="scooter" />
+    </bean>
+    -->
+
+</beans>
