@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: account-service
+          uri: lb://account-management-service
+          predicates:
+            - Path=/account/**
+        - id: loan-service
+          uri: lb://loan-processing-service
+          predicates:
+            - Path=/loan/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
